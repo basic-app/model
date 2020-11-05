@@ -42,6 +42,28 @@
         return $this->where($this->parentKey, $id)->findAll();
     }
 
+    public function createEntity(array $default = [])
+    {
+        if ($this->returnType == 'array')
+        {
+            $return = $default;
+
+            foreach($this->allowedFields as $key)
+            {
+                if (!array_key_exists($key, $return))
+                {
+                    $return[$key] = null;
+                }
+            }
+
+            return $return;
+        }
+
+        $entityClass = $this->returnType;
+
+        return new $entityClass($default);
+    }
+
     public function deleteEntity($entity)
     {
         if ($this->parentKey)
@@ -58,6 +80,44 @@
         $id = $this->entityPrimaryKey($entity);
 
         return $this->delete($id);
+    }
+
+    public function fillEntity(&$entity, $request)
+    {
+        if ($this->returnType == 'array')
+        {
+            $hasChanged = false;
+
+            foreach($request as $key => $value)
+            {
+                if (!array_key_exists($key, $entity) || ($value != $entity[$key]))
+                {
+                    $hasChanged = true;
+                }
+
+                $entity[$key] = $value;
+            }
+
+            return $hasChanged;
+        }
+
+        $entity->fill($request);
+
+        return $entity->hasChanged();
+    }
+
+    public function setEntityParentKey(&$entity, $parentId)
+    {
+        assert($this->parentKey ? true : false, __CLASS__ . '::parentKey');
+
+        if ($this->returnType == 'array')
+        {
+            $entity[$this->parentKey] = $parentId;
+        }
+        else
+        {
+            $entity->{$this->parentKey} = $parentId;
+        }
     }
     
  }
