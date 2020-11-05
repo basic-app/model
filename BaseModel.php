@@ -8,4 +8,7 @@ namespace BasicApp\Model;
 
 abstract class BaseModel extends \CodeIgniter\Model
 {
+
+    use EntityTrait;
+
 }
