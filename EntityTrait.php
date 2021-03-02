@@ -9,8 +9,6 @@
  trait EntityTrait
  {
 
-    protected $parentKey;
-
     public function entityPrimaryKey($entity)
     {
         assert($this->primaryKey ? true : false, __CLASS__ . '::primaryKey');
@@ -21,25 +19,6 @@
         }
 
         return $entity->{$this->primaryKey};
-    }
-
-    public function entityParentKey($entity)
-    {
-        assert($this->parentKey ? true : false, __CLASS__ . '::parentKey');
-
-        if ($this->returnType == 'array')
-        {
-            return $entity[$this->parentKey];
-        }
-
-        return $entity->{$this->parentKey};
-    }
-
-    public function entityChildrens($entity)
-    {
-        $id = $this->entityPrimaryKey($entity);
-
-        return $this->where($this->parentKey, $id)->findAll();
     }
 
     public function createEntity(array $default = [])
@@ -104,20 +83,6 @@
         $entity->fill($request);
 
         return $entity->hasChanged();
-    }
-
-    public function setEntityParentKey(&$entity, $parentId)
-    {
-        assert($this->parentKey ? true : false, __CLASS__ . '::parentKey');
-
-        if ($this->returnType == 'array')
-        {
-            $entity[$this->parentKey] = $parentId;
-        }
-        else
-        {
-            $entity->{$this->parentKey} = $parentId;
-        }
     }
     
  }
