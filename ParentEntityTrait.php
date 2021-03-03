@@ -6,7 +6,7 @@
  */
  namespace BasicApp\Model;
 
- trait ParentTrait
+ trait ParentEntityTrait
  {
 
     protected $parentKey;
