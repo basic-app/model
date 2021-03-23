@@ -6,13 +6,12 @@
  */
 namespace BasicApp\Model;
 
-abstract class BaseModel extends \CodeIgniter\Model
+trait ModelTrait
 {
 
-    use ModelTrait;
-
-    use EntityTrait;
-
-    use ParentEntityTrait;
+    public function idValue($data)
+    {
+        return parent::idValue($data);
+    }
 
 }
