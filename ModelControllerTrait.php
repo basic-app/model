@@ -44,4 +44,19 @@ trait ModelControllerTrait
         return $this->model->idValue($data);
     }
 
+    public function modelReturnType()
+    {
+        return $this->model->returnType;
+    }
+
+    public function modelPrimaryKey()
+    {
+        return $this->model->primaryKey;
+    }
+
+    public function modelAllowedFields()
+    {
+        return $this->model->allowedFields;
+    }
+
 }
