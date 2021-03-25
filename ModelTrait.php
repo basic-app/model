@@ -19,4 +19,14 @@ trait ModelTrait
         return $this->countAllResults();
     }
 
+    public function one()
+    {
+        return $this->first();
+    }
+
+    public function all()
+    {
+        return $this->findAll();
+    }
+
 }
