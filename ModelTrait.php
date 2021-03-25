@@ -14,4 +14,9 @@ trait ModelTrait
         return parent::idValue($data);
     }
 
+    public function count()
+    {
+        return $this->countAllResults();
+    }
+
 }
