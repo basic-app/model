@@ -6,6 +6,8 @@
  */
 namespace BasicApp\Model;
 
+use CodeIgniter\Exceptions\PageNotFoundException;
+
 trait ModelTrait
 {
 
@@ -27,6 +29,27 @@ trait ModelTrait
     public function all()
     {
         return $this->findAll();
+    }
+
+    public function findOne($id)
+    {
+        assert($id ? true : false);
+
+        return $this->find($id);
+    }
+
+    public function findOrFail($id)
+    {
+        assert($id ? true : false);
+
+        $return = $this->find($id);
+
+        if (!$return)
+        {
+            throw PageNotFoundException::forPageNotFound();
+        }
+
+        return $return;
     }
 
 }
