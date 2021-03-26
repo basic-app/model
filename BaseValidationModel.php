@@ -1,12 +1,20 @@
 <?php
-
+/**
+ * @author Basic App Dev Team <dev@basic-app.com>
+ * @author CodeIgniter Foundation <admin@codeigniter.com>
+ * @license MIT
+ * @link https://basic-app.com
+ */
 namespace BasicApp\Model;
 
+use BasicApp\Entity\ModelEntityTrait;
 use CodeIgniter\Validation\ValidationInterface;
 use Config\Services;
 
 class BaseValidationModel
 {
+
+    use ModelEntityTrait;
 
     /**
      * The Database connection group that
@@ -23,6 +31,14 @@ class BaseValidationModel
      * @var string
      */
     protected $returnType = 'array';
+
+    /**
+     * An array of field names that are allowed
+     * to be set by the user in inserts/updates.
+     *
+     * @var array
+     */
+    protected $allowedFields = [];
 
     /**
      * Rules used to validate data in insert, update, and save methods.
@@ -265,6 +281,5 @@ class BaseValidationModel
 
         return $rules;
     }
-
 
 }
