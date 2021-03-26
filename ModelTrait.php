@@ -52,4 +52,9 @@ trait ModelTrait
         return $return;
     }
 
+    public function allowed()
+    {
+        return $this->select($this->allowedFields);
+    }
+
 }
