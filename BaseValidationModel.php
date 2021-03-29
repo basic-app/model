@@ -7,14 +7,13 @@
  */
 namespace BasicApp\Model;
 
-use BasicApp\Entity\ModelEntityTrait;
 use CodeIgniter\Validation\ValidationInterface;
 use Config\Services;
 
 class BaseValidationModel
 {
 
-    use ModelEntityTrait;
+    use ModelTrait;
 
     /**
      * The Database connection group that
@@ -280,6 +279,16 @@ class BaseValidationModel
         }
 
         return $rules;
+    }
+
+    public function save($data): bool
+    {
+        return $this->validate($data);
+    }
+
+    public function insertID()
+    {
+        return null;
     }
 
 }
