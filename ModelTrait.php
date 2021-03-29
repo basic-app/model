@@ -6,8 +6,6 @@
  */
 namespace BasicApp\Model;
 
-use CodeIgniter\Exceptions\PageNotFoundException;
-
 trait ModelTrait
 {
 
@@ -74,10 +72,7 @@ trait ModelTrait
     {
         $return = $this->findOne($id);
 
-        if (!$return)
-        {
-            throw PageNotFoundException::forPageNotFound();
-        }
+        assert($return ? true : false, __CLASS__ . '::findOrFail');
 
         return $return;
     }
@@ -146,26 +141,22 @@ trait ModelTrait
         return $this->idValue($entity);
     }
 
-    public function createEntity(array $default = [])
+    public function createEntity(array $data = [])
     {
         if ($this->returnType == 'array')
         {
-            $return = $default;
+            $return = [];
+        }
+        else
+        {
+            $entityClass = $this->returnType;
 
-            foreach($this->allowedFields as $key)
-            {
-                if (!array_key_exists($key, $return))
-                {
-                    $return[$key] = null;
-                }
-            }
-
-            return $return;
+            $return = new $entityClass;
         }
 
-        $entityClass = $this->returnType;
+        $return = $this->fillEntity($return, $data);
 
-        return new $entityClass($default);
+        return $return;
     }
 
     public function deleteEntity($entity)
