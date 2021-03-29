@@ -53,7 +53,14 @@ trait ModelTrait
     {
         assert($id ? true : false);
 
-        $return = $this->find($id);
+        if (is_array($id))
+        {
+            $return = $this->where($id)->first();
+        }
+        else
+        {
+            $return = $this->find($id);
+        }
 
         if ($return)
         {
@@ -215,6 +222,29 @@ trait ModelTrait
     public function errors(bool $forceDB = false) : array
     {
         return (array) parent::errors($forceDB);
+    }
+
+    public function findOrCreate(array $key, array $fields = [])
+    {
+        $return = $this->findOne($key);
+
+        if ($return)
+        {
+            return $return;
+        }
+
+        $entity = $this->createEntity(array_merge($fields, $key));
+
+        $this->saveOrFail($entity->toArray());
+
+        return $this->findOrFail($key);
+    }
+
+    public function saveOrFail($data = null)
+    {
+        assert($this->save($data), __CLASS__ . '::saveOrFail');
+
+        return true;
     }
 
 }
