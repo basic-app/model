@@ -23,26 +23,45 @@ trait ModelTrait
 
     public function one()
     {
-        return $this->first();
+        $return = $this->first();
+
+        if ($return)
+        {
+            $return = $this->prepareEntity($return);
+        }
+
+        return $return;
     }
 
     public function all()
     {
-        return $this->findAll();
+        $return = $this->findAll();
+    
+        foreach($return as $key => $data)
+        {
+            $return[$key] = $this->prepareEntity($data);
+        }
+
+        return $return;
     }
 
     public function findOne($id)
     {
         assert($id ? true : false);
 
-        return $this->find($id);
+        $return = $this->find($id);
+
+        if ($return)
+        {
+            $return = $this->prepareEntity($return);
+        }
+
+        return $return;
     }
 
     public function findOrFail($id)
     {
-        assert($id ? true : false);
-
-        $return = $this->find($id);
+        $return = $this->findOne($id);
 
         if (!$return)
         {
@@ -55,6 +74,11 @@ trait ModelTrait
     public function allowed()
     {
         return $this->select($this->allowedFields);
+    }
+
+    public function prepareEntity($data)
+    {
+        return $data;
     }
 
 }
