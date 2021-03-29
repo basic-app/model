@@ -11,6 +11,10 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 trait ModelTrait
 {
 
+    protected $parentKey;
+
+    protected $unsafeFields = [];
+
     public function idValue($data)
     {
         return parent::idValue($data);
@@ -76,9 +80,141 @@ trait ModelTrait
         return $this->select($this->allowedFields);
     }
 
-    public function prepareEntity($data)
+    public function prepareEntity($entity)
     {
-        return $data;
+        if (is_array($entity))
+        {
+            foreach($this->unsafeFields as $field)
+            {
+                unset($entity[$field]);
+            }
+        }
+        else
+        {
+            foreach($this->unsafeFields as $field)
+            {
+                unset($entity->$field);
+            }
+        }
+
+        return $entity;
+    }
+
+    public function fillEntity($entity, array $data, &$hasChanged = null)
+    {
+        foreach($data as $key => $value)
+        {
+            if (array_search($key, $this->unsafeFields) !== false)
+            {
+                unset($data[$key]);
+            }
+        }
+
+        if (is_array($entity))
+        {
+            $hasChanged = false;
+
+            foreach($data as $key => $value)
+            {
+                if (!array_key_exists($key, $entity) || ($value != $entity[$key]))
+                {
+                    $hasChanged = true;
+                }
+
+                $entity[$key] = $value;
+            }            
+        }
+        else
+        {
+            $entity->fill($data);
+
+            $hasChanged = $entity->hasChanged();
+        }
+
+        return $entity;
+    }
+    
+    public function entityPrimaryKey($entity)
+    {
+        return $this->idValue($entity);
+    }
+
+    public function createEntity(array $default = [])
+    {
+        if ($this->returnType == 'array')
+        {
+            $return = $default;
+
+            foreach($this->allowedFields as $key)
+            {
+                if (!array_key_exists($key, $return))
+                {
+                    $return[$key] = null;
+                }
+            }
+
+            return $return;
+        }
+
+        $entityClass = $this->returnType;
+
+        return new $entityClass($default);
+    }
+
+    public function deleteEntity($entity)
+    {
+        if ($this->parentKey)
+        {
+            foreach($this->entityChildrens($entity) as $children)
+            {
+                if (!$this->deleteEntity($children))
+                {
+                    return false;
+                }
+            }
+        }
+
+        $id = $this->entityPrimaryKey($entity);
+
+        return $this->delete($id);
+    }
+ 
+    public function entityParentKey($entity)
+    {
+        assert($this->parentKey ? true : false, __CLASS__ . '::parentKey');
+
+        if ($this->returnType == 'array')
+        {
+            return $entity[$this->parentKey];
+        }
+
+        return $entity->{$this->parentKey};
+    }
+
+    public function entityChildrens($entity)
+    {
+        $id = $this->entityPrimaryKey($entity);
+
+        return $this->where($this->parentKey, $id)->findAll();
+    }
+
+    public function setEntityParentKey(&$entity, $parentId)
+    {
+        assert($this->parentKey ? true : false, __CLASS__ . '::parentKey');
+
+        if ($this->returnType == 'array')
+        {
+            $entity[$this->parentKey] = $parentId;
+        }
+        else
+        {
+            $entity->{$this->parentKey} = $parentId;
+        }
+    }
+
+    public function errors(bool $forceDB = false) : array
+    {
+        return (array) parent::errors($forceDB);
     }
 
 }

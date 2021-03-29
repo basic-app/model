@@ -6,13 +6,9 @@
  */
 namespace BasicApp\Model;
 
-use BasicApp\Entity\ModelEntityTrait;
-
 abstract class BaseModel extends \CodeIgniter\Model
 {
 
     use ModelTrait;
-
-    use ModelEntityTrait;
 
 }
