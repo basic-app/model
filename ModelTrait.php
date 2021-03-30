@@ -212,7 +212,14 @@ trait ModelTrait
 
     public function errors(bool $forceDB = false) : array
     {
-        return (array) parent::errors($forceDB);
+        $return = parent::errors($forceDB);
+    
+        if (!$return)
+        {
+            return [];
+        }
+
+        return $return;
     }
 
     public function findOrCreate(array $key, array $fields = [])
