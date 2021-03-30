@@ -6,12 +6,19 @@
  */
 namespace BasicApp\Model;
 
+use CodeIgniter\Database\ConnectionInterface;
+
 trait ModelTrait
 {
 
     protected $parentKey;
 
     protected $unsafeFields = [];
+
+    public static function model(bool $getShared = true, ConnectionInterface &$conn = null)
+    {
+        return model(static::class, $getShared, $conn);
+    }
 
     public function idValue($data)
     {
