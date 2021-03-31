@@ -245,6 +245,8 @@ trait ModelTrait
             {
                 $fields = $fields->bindTo($this, $this);
 
+                assert($fields ? true : false);
+
                 $fields = $fields();
             }
 
