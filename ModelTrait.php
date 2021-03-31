@@ -6,6 +6,7 @@
  */
 namespace BasicApp\Model;
 
+use Closure;
 use CodeIgniter\Database\ConnectionInterface;
 
 trait ModelTrait
@@ -229,7 +230,7 @@ trait ModelTrait
         return $return;
     }
 
-    public function findOrCreate(array $key, array $fields = [])
+    public function findOrCreate(array $key, $fields = null)
     {
         $return = $this->findOne($key);
 
@@ -238,7 +239,23 @@ trait ModelTrait
             return $return;
         }
 
-        $entity = $this->createEntity(array_merge($fields, $key));
+        if ($fields)
+        {
+            if ($fields instanceof Closure)
+            {
+                $fields = $fields->bindTo($this, $this);
+
+                $fields = $fields();
+            }
+
+            $data = array_merge($fields, $key);
+        }
+        else
+        {
+            $data = $key;
+        }
+
+        $entity = $this->createEntity($data);
 
         $this->saveOrFail($entity->toArray());
 
