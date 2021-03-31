@@ -16,6 +16,13 @@ class BaseValidationModel
     use ModelTrait;
 
     /**
+     * The table's primary key.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+
+    /**
      * The Database connection group that
      * should be instantiated.
      *
@@ -290,5 +297,28 @@ class BaseValidationModel
     {
         return null;
     }
+
+    /**
+     * Returns the id value for the data array or object
+     *
+     * @param array|object $data Data
+     *
+     * @return integer|array|string|null
+     */
+    public function idValue($data)
+    {
+        if (is_object($data) && isset($data->{$this->primaryKey}))
+        {
+            return $data->{$this->primaryKey};
+        }
+
+        if (is_array($data) && ! empty($data[$this->primaryKey]))
+        {
+            return $data[$this->primaryKey];
+        }
+
+        return null;
+    }
+
 
 }
