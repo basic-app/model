@@ -7,8 +7,8 @@
 namespace BasicApp\Model;
 
 use Closure;
-use Exception;
 use CodeIgniter\Database\ConnectionInterface;
+use Webmozart\Assert\Assert;
 
 trait ModelTrait
 {
@@ -53,10 +53,9 @@ trait ModelTrait
 
     public function findOne($id)
     {
-        if (!$id || (!is_numeric($id) && !is_string($id)))
-        {
-            throw new Exception('Bad primary key.');
-        }
+        Assert::notEmpty($id, 'Primary key is not defined.');
+
+        Assert::false(!is_numeric($id) && !is_string($id), 'Bad primary key.');
 
         $return = $this->find($id);
 
@@ -72,7 +71,7 @@ trait ModelTrait
     {
         $return = $this->findOne($id);
 
-        assert($return ? true : false, __CLASS__ . '::findOrFail');
+        Assert::notEmpty($return, 'Row not found.');
 
         return $return;
     }
@@ -179,7 +178,7 @@ trait ModelTrait
  
     public function entityParentKey($entity)
     {
-        assert($this->parentKey ? true : false, __CLASS__ . '::parentKey');
+        Assert::notEmpty($this->parentKey, 'Parent key is not defined.');
 
         if ($this->returnType == 'array')
         {
@@ -198,7 +197,7 @@ trait ModelTrait
 
     public function setEntityParentKey(&$entity, $parentId)
     {
-        assert($this->parentKey ? true : false, __CLASS__ . '::parentKey');
+        Assert::notEmpty($this->parentKey, 'Parent key is not defined.');
 
         if ($this->returnType == 'array')
         {
@@ -237,7 +236,7 @@ trait ModelTrait
             {
                 $fields = $fields->bindTo($this, $this);
 
-                assert($fields ? true : false);
+                Assert::notEmpty($fields, 'Bind failed.');
 
                 $fields = $fields();
             }
@@ -258,9 +257,11 @@ trait ModelTrait
 
     public function saveOrFail($data = null)
     {
-        assert($this->save($data), __CLASS__ . '::saveOrFail');
+        $return = $this->save($data);
 
-        return true;
+        Assert::true($return, 'Save failed.');
+
+        return $return;
     }
 
 }
