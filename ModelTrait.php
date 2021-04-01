@@ -7,6 +7,7 @@
 namespace BasicApp\Model;
 
 use Closure;
+use Exception;
 use CodeIgniter\Database\ConnectionInterface;
 
 trait ModelTrait
@@ -19,11 +20,6 @@ trait ModelTrait
     public static function model(bool $getShared = true, ConnectionInterface &$conn = null)
     {
         return model(static::class, $getShared, $conn);
-    }
-
-    public function idValue($data)
-    {
-        return parent::idValue($data);
     }
 
     public function count()
@@ -57,18 +53,19 @@ trait ModelTrait
 
     public function findOne($id)
     {
-        assert($id ? true : false);
-
-        if (is_array($id))
+        if (!$id || (!is_numeric($id) && !is_string($id)))
         {
-            $this->where($id);
-        }
-        else
-        {
-            $this->where($this->primaryKey, $id);
+            throw new Exception('Bad primary key.');
         }
 
-        return $this->one();
+        $return = $this->find($id);
+
+        if ($return)
+        {
+            $return = $this->prepareEntity($return);
+        }
+
+        return $return;
     }
 
     public function findOrFail($id)
