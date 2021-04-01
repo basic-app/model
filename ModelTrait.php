@@ -55,6 +55,11 @@ trait ModelTrait
     {
         Assert::notEmpty($id, 'Primary key is not defined.');
 
+        if (is_array($id))
+        {
+            return $this->where($id)->one();
+        }
+
         Assert::false(!is_numeric($id) && !is_string($id), 'Bad primary key.');
 
         $return = $this->find($id);
@@ -223,7 +228,7 @@ trait ModelTrait
 
     public function findOrCreate(array $key, $fields = null)
     {
-        $return = $this->findOne($key);
+        $return = $this->where($key)->one();
 
         if ($return)
         {
