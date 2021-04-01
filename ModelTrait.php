@@ -61,19 +61,14 @@ trait ModelTrait
 
         if (is_array($id))
         {
-            $return = $this->where($id)->first();
+            $this->where($id);
         }
         else
         {
-            $return = $this->find($id);
+            $this->where($this->primaryKey, $id);
         }
 
-        if ($return)
-        {
-            $return = $this->prepareEntity($return);
-        }
-
-        return $return;
+        return $this->one();
     }
 
     public function findOrFail($id)
