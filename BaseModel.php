@@ -11,4 +11,6 @@ abstract class BaseModel extends \CodeIgniter\Model
 
     use ModelTrait;
 
+    use EntityTrait;
+
 }

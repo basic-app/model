@@ -15,6 +15,8 @@ class BaseValidationModel
 
     use ModelTrait;
 
+    use EntityTrait;
+
     /**
      * The table's primary key.
      *

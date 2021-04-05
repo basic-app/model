@@ -33,7 +33,7 @@ trait ModelTrait
 
         if ($return)
         {
-            $return = $this->prepareEntity($return);
+            $return = $this->prepareData($return);
         }
 
         return $return;
@@ -45,7 +45,7 @@ trait ModelTrait
     
         foreach($return as $key => $data)
         {
-            $return[$key] = $this->prepareEntity($data);
+            $return[$key] = $this->prepareData($data);
         }
 
         return $return;
@@ -66,7 +66,7 @@ trait ModelTrait
 
         if ($return)
         {
-            $return = $this->prepareEntity($return);
+            $return = $this->prepareData($return);
         }
 
         return $return;
@@ -86,7 +86,7 @@ trait ModelTrait
         return $this->select($this->allowedFields);
     }
 
-    public function prepareEntity($entity)
+    public function prepareData($entity)
     {
         if (is_array($entity))
         {
@@ -104,114 +104,6 @@ trait ModelTrait
         }
 
         return $entity;
-    }
-
-    public function fillEntity($entity, array $data, &$hasChanged = null)
-    {
-        foreach($data as $key => $value)
-        {
-            if (array_search($key, $this->unsafeFields) !== false)
-            {
-                unset($data[$key]);
-            }
-        }
-
-        if (is_array($entity))
-        {
-            $hasChanged = false;
-
-            foreach($data as $key => $value)
-            {
-                if (!array_key_exists($key, $entity) || ($value != $entity[$key]))
-                {
-                    $hasChanged = true;
-                }
-
-                $entity[$key] = $value;
-            }            
-        }
-        else
-        {
-            $entity->fill($data);
-
-            $hasChanged = $entity->hasChanged();
-        }
-
-        return $entity;
-    }
-    
-    public function entityPrimaryKey($entity)
-    {
-        return $this->idValue($entity);
-    }
-
-    public function createEntity(array $data = [])
-    {
-        if ($this->returnType == 'array')
-        {
-            $return = [];
-        }
-        else
-        {
-            $entityClass = $this->returnType;
-
-            $return = new $entityClass;
-        }
-
-        $return = $this->fillEntity($return, $data);
-
-        return $return;
-    }
-
-    public function deleteEntity($entity)
-    {
-        if ($this->parentKey)
-        {
-            foreach($this->entityChildrens($entity) as $children)
-            {
-                if (!$this->deleteEntity($children))
-                {
-                    return false;
-                }
-            }
-        }
-
-        $id = $this->entityPrimaryKey($entity);
-
-        return $this->delete($id);
-    }
- 
-    public function entityParentKey($entity)
-    {
-        Assert::notEmpty($this->parentKey, 'Parent key is not defined.');
-
-        if ($this->returnType == 'array')
-        {
-            return $entity[$this->parentKey];
-        }
-
-        return $entity->{$this->parentKey};
-    }
-
-    public function entityChildrens($entity)
-    {
-        $id = $this->entityPrimaryKey($entity);
-
-        return $this->where($this->parentKey, $id)->findAll();
-    }
-
-    public function setEntityParentKey(&$entity, $parentId)
-    {
-        Assert::notEmpty($this->parentKey, 'Parent key is not defined.');
-
-        if ($this->returnType == 'array')
-        {
-            $entity[$this->parentKey] = $parentId;
-        }
-        else
-        {
-            $entity->{$this->parentKey} = $parentId;
-        }
     }
 
     public function errors(bool $forceDB = false) : array
