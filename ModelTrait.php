@@ -72,11 +72,11 @@ trait ModelTrait
         return $return;
     }
 
-    public function findOrFail($id, string $error = 'Not found.')
+    public function findOrFail($id, string $error = null)
     {
         $return = $this->findOne($id);
 
-        Assert::notEmpty($return, $error);
+        Assert::notEmpty($return, $error ?? 'Data not found.');
 
         return $return;
     }
@@ -152,11 +152,11 @@ trait ModelTrait
         return $this->findOrFail($key);
     }
 
-    public function saveOrFail($data = null)
+    public function saveOrFail($data = null, $error = null)
     {
         $return = $this->save($data);
 
-        Assert::true($return, 'Save failed.');
+        Assert::true($return, $error ?? 'Save failed.');
 
         return $return;
     }
