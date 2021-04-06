@@ -72,11 +72,11 @@ trait ModelTrait
         return $return;
     }
 
-    public function findOrFail($id)
+    public function findOrFail($id, string $error = 'Not found.')
     {
         $return = $this->findOne($id);
 
-        Assert::notEmpty($return, 'Row not found.');
+        Assert::notEmpty($return, $error);
 
         return $return;
     }
