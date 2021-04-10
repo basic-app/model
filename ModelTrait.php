@@ -50,15 +50,20 @@ trait ModelTrait
     {
         Assert::notEmpty($id, 'ID not defined.');
 
-        $this->where($this->table . '.' . $this->primaryKey, $id);
+        if (is_array($id))
+        {
+            $this->where($id);
+        }
+        else
+        {
+            $this->where($this->table . '.' . $this->primaryKey, $id);
+        }
 
         return $this->one();
     }
 
     public function findOrFail($id, string $error = null)
     {
-        Assert::notEmpty($id, 'ID not defined.');
-        
         $return = $this->findOne($id);
 
         Assert::notEmpty($return, $error ?? 'Data not found.');
