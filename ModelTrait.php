@@ -151,4 +151,15 @@ trait ModelTrait
         return $return;
     }
 
+    public function deleteOrFail($id, $error = null)
+    {
+        $return = $this->delete($id);
+
+        $error = $error ?? 'Delete error.';
+
+        Assert::true($return->resultID, $return->connID->error() ?? $error);
+
+        return $return;
+    }
+
 }
