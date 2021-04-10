@@ -126,7 +126,7 @@ trait EntityTrait
  
     public function entityParentKey($entity)
     {
-        Assert::notEmpty($this->parentKey, 'Parent key is not defined.');
+        Assert::notEmpty($this->parentKey, 'Parent key not defined.');
 
         return $this->entityField($entity, $this->parentKey);
     }

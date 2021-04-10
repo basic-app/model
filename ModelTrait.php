@@ -17,11 +17,6 @@ trait ModelTrait
 
     protected $unsafeFields = [];
 
-    public static function model(bool $getShared = true, ConnectionInterface &$conn = null)
-    {
-        return model(static::class, $getShared, $conn);
-    }
-
     public function count()
     {
         return $this->countAllResults();
@@ -53,27 +48,17 @@ trait ModelTrait
 
     public function findOne($id)
     {
-        Assert::notEmpty($id, 'Primary key is not defined.');
+        Assert::notEmpty($id, 'ID not defined.');
 
-        if (is_array($id))
-        {
-            return $this->where($id)->one();
-        }
+        $this->where($this->table . '.' . $this->primaryKey, $id);
 
-        Assert::false(!is_numeric($id) && !is_string($id), 'Bad primary key.');
-
-        $return = $this->find($id);
-
-        if ($return)
-        {
-            $return = $this->prepareData($return);
-        }
-
-        return $return;
+        return $this->one();
     }
 
     public function findOrFail($id, string $error = null)
     {
+        Assert::notEmpty($id, 'ID not defined.');
+        
         $return = $this->findOne($id);
 
         Assert::notEmpty($return, $error ?? 'Data not found.');
