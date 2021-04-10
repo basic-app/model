@@ -157,7 +157,7 @@ trait ModelTrait
 
         $error = $error ?? 'Delete error.';
 
-        Assert::true($return->resultID, $return->connID->error() ?? $error);
+        Assert::true($return->resultID, $this->db->error() ?? $error);
 
         return $return;
     }
