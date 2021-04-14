@@ -6,11 +6,27 @@
  */
 namespace BasicApp\Model;
 
+use CodeIgniter\Validation\ValidationInterface;
+
 abstract class BaseModel extends \CodeIgniter\Model
 {
 
     use ModelTrait;
 
     use EntityTrait;
+
+    use DefaultEventsTrait;
+
+    /**
+     * BaseModel constructor.
+     *
+     * @param ValidationInterface|null $validation Validation
+     */
+    public function __construct(ValidationInterface $validation = null)
+    {
+        parent::__construct($validation);
+
+        $this->setDefaultEvents();
+    }
 
 }
