@@ -151,6 +151,24 @@ trait ModelTrait
         return $return;
     }
 
+    public function insertOrFail($data = null, bool $returnID = true, ?string $error = null)
+    {
+        $return = $this->insert($data, $returnID);
+
+        Assert::true($return ? true : false, $error ?? 'Insert failed.');
+
+        return $return;
+    }
+
+    public function updateOrFail($id = null, $data = null, ?string $error = null)
+    {
+        $return = $this->update($id, $data);
+
+        Assert::true($return ? true : false, $error ?? 'Update failed.');
+
+        return $return;
+    }
+
     public function deleteOrFail($id, $error = null)
     {
         $return = $this->delete($id);
