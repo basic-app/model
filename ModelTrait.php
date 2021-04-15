@@ -17,6 +17,25 @@ trait ModelTrait
 
     protected $unsafeFields = [];
 
+    protected $validationOnly = [];
+
+    protected $validationExcept = [];
+
+    public function getValidationRules(array $options = []): array
+    {
+        if (!array_key_exists('except', $options) && $this->validationExcept)
+        {
+            $options['except'] = $this->validationExcept;
+        }
+
+        if (!array_key_exists('only', $options) && $this->validationOnly)
+        {
+            $options['only'] = $this->validationOnly;
+        }
+
+        return parent::getValidationRules($options);
+    }
+
     public function count()
     {
         return $this->countAllResults();
