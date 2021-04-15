@@ -57,6 +57,14 @@ trait EntityTrait
             {
                 unset($data[$key]);
             }
+
+            if ($this->fillableFields)
+            {
+                if (array_search($key, $this->fillableFields) === false)
+                {
+                    unset($data[$key]);
+                }
+            }
         }
 
         if (is_array($entity))

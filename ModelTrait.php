@@ -17,9 +17,11 @@ trait ModelTrait
 
     protected $unsafeFields = [];
 
-    protected $validationOnly = [];
+    protected $fillableFields;
 
-    protected $validationExcept = [];
+    protected $validationOnly;
+
+    protected $validationExcept;
 
     public function getValidationRules(array $options = []): array
     {
