@@ -17,6 +17,8 @@ trait ModelTrait
 
     protected $unsafeFields = [];
 
+    protected $fillUnsafeFields = false;
+
     protected $fillableFields;
 
     protected $validationOnly;

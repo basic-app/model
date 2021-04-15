@@ -53,7 +53,7 @@ trait EntityTrait
     {
         foreach($data as $key => $value)
         {
-            if (array_search($key, $this->unsafeFields) !== false)
+            if (!$this->fillUnsafeFields && array_search($key, $this->unsafeFields) !== false)
             {
                 unset($data[$key]);
             }
