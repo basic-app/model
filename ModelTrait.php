@@ -208,4 +208,13 @@ trait ModelTrait
         return $return;
     }
 
+    public function refresh(&$entity)
+    {
+        $id = $this->entityPrimaryKey($entity);
+
+        Assert::notEmpty($id);
+
+        $entity = $this->findOrFail($id);
+    }
+
 }
