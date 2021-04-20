@@ -25,6 +25,11 @@ trait ModelTrait
 
     protected $validationExcept;
 
+    public static function model(bool $getShared = true, ConnectionInterface &$conn = null)
+    {
+        return model(get_called_class(), $getShared, $conn);
+    }
+
     public function getValidationRules(array $options = []): array
     {
         if (!array_key_exists('except', $options) && $this->validationExcept)
