@@ -212,7 +212,7 @@ trait ModelTrait
     {
         $id = $this->entityPrimaryKey($entity);
 
-        Assert::notEmpty($id);
+        Assert::notEmpty($id, 'ID not found.');
 
         $entity = $this->findOrFail($id);
     }
