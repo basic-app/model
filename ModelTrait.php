@@ -174,7 +174,7 @@ trait ModelTrait
     {
         $return = $this->save($data);
 
-        Assert::true($return, $error ?? 'Save failed.');
+        Assert::true($return, $error ?? $this->firstError('Save failed.'));
 
         return $return;
     }
@@ -215,6 +215,18 @@ trait ModelTrait
         Assert::notEmpty($id);
 
         $entity = $this->findOrFail($id);
+    }
+
+    public function firstError($default = null, ...$params)
+    {
+        $errors = $this->errors(...$params);
+
+        if (count($errors) > 0)
+        {
+            return array_shift($errors);
+        }
+
+        return $default;
     }
 
 }
