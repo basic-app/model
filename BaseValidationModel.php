@@ -7,8 +7,13 @@
  */
 namespace BasicApp\Model;
 
+use CodeIgniter\I18n\Time;
 use CodeIgniter\Validation\ValidationInterface;
 use Config\Services;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionProperty;
+use stdClass;
 
 class BaseValidationModel
 {
@@ -292,7 +297,63 @@ class BaseValidationModel
 
     public function save($data): bool
     {
+        if (empty($data))
+        {
+            return true;
+        }
+
+        $data = $this->transformDataToArray($data, 'insert');
+
         return $this->validate($data);
+    }
+
+    /**
+     * Transform data to array
+     *
+     * @param array|object|null $data Data
+     * @param string            $type Type of data (insert|update)
+     *
+     * @return array
+     *
+     * @throws DataException
+     * @throws InvalidArgumentException
+     * @throws ReflectionException
+     */
+    protected function transformDataToArray($data, string $type): array
+    {
+        if (! in_array($type, ['insert', 'update'], true))
+        {
+            throw new InvalidArgumentException(sprintf('Invalid type "%s" used upon transforming data to array.', $type));
+        }
+
+        if (empty($data))
+        {
+            throw DataException::forEmptyDataset($type);
+        }
+
+        // If $data is using a custom class with public or protected
+        // properties representing the collection elements, we need to grab
+        // them as an array.
+        if (is_object($data) && ! $data instanceof stdClass)
+        {
+            $data = $this->objectToArray($data, true, true);
+        }
+
+        // If it's still a stdClass, go ahead and convert to
+        // an array so doProtectFields and other model methods
+        // don't have to do special checks.
+        if (is_object($data))
+        {
+            $data = (array) $data;
+        }
+
+        // If it's still empty here, means $data is no change or is empty object
+        if (empty($data))
+        {
+            throw DataException::forEmptyDataset($type);
+        }
+
+        return $data;
     }
 
     public function insertID()
@@ -322,5 +383,75 @@ class BaseValidationModel
         return null;
     }
 
+    /**
+     * Takes a class an returns an array of it's public and protected
+     * properties as an array suitable for use in creates and updates.
+     * This method use objectToRawArray internally and does conversion
+     * to string on all Time instances
+     *
+     * @param string|object $data        Data
+     * @param boolean       $onlyChanged Only Changed Property
+     * @param boolean       $recursive   If true, inner entities will be casted as array as well
+     *
+     * @return array Array
+     *
+     * @throws ReflectionException
+     */
+    protected function objectToArray($data, bool $onlyChanged = true, bool $recursive = false): array
+    {
+        $properties = $this->objectToRawArray($data, $onlyChanged, $recursive);
+
+        // Convert any Time instances to appropriate $dateFormat
+        if ($properties)
+        {
+            $properties = array_map(function ($value) {
+                if ($value instanceof Time)
+                {
+                    return $this->timeToDate($value);
+                }
+                return $value;
+            }, $properties);
+        }
+
+        return $properties;
+    }
+
+    /**
+     * Takes a class an returns an array of it's public and protected
+     * properties as an array with raw values.
+     *
+     * @param string|object $data        Data
+     * @param boolean       $onlyChanged Only Changed Property
+     * @param boolean       $recursive   If true, inner entities will be casted as array as well
+     *
+     * @return array|null Array
+     *
+     * @throws ReflectionException
+     */
+    protected function objectToRawArray($data, bool $onlyChanged = true, bool $recursive = false): ?array
+    {
+        if (method_exists($data, 'toRawArray'))
+        {
+            $properties = $data->toRawArray($onlyChanged, $recursive);
+        }
+        else
+        {
+            $mirror = new ReflectionClass($data);
+            $props  = $mirror->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
+
+            $properties = [];
+
+            // Loop over each property,
+            // saving the name/value in a new array we can return.
+            foreach ($props as $prop)
+            {
+                // Must make protected values accessible.
+                $prop->setAccessible(true);
+                $properties[$prop->getName()] = $prop->getValue($data);
+            }
+        }
+
+        return $properties;
+    }
 
 }
