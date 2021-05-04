@@ -25,6 +25,8 @@ trait ModelTrait
 
     protected $validationExcept;
 
+    protected $requiredFields = [];
+
     public static function model(bool $getShared = true, ConnectionInterface &$conn = null)
     {
         return model(get_called_class(), $getShared, $conn);
@@ -42,7 +44,24 @@ trait ModelTrait
             $options['only'] = $this->validationOnly;
         }
 
-        return parent::getValidationRules($options);
+        $return = parent::getValidationRules($options);
+    
+        foreach($this->requiredFields as $field)
+        {
+            if (strpos($return[$field]['rules'], 'required') === false)
+            {
+                if (empty($return[$field]['rules']))
+                {
+                    $return[$field]['rules'] = 'required';
+                }
+                else
+                {
+                    $return[$field]['rules'] = 'required|' . $return[$field]['rules'];
+                }
+            }
+        }
+
+        return $return;
     }
 
     public function count()
