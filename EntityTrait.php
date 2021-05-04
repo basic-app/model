@@ -87,22 +87,11 @@ trait EntityTrait
         return $this->idValue($entity);
     }
 
-    public function createEntity(array $data = [])
+    public function createEntity(array $defaults = [])
     {
-        if ($this->returnType == 'array')
-        {
-            $return = [];
-        }
-        else
-        {
-            $entityClass = $this->returnType;
+        $entityClass = $this->returnType;
 
-            $return = new $entityClass;
-        }
-
-        $return = $this->fillEntity($return, $data);
-
-        return $return;
+        return new $entityClass($defaults);
     }
 
     public function deleteEntity($entity)

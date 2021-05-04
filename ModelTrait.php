@@ -26,6 +26,18 @@ trait ModelTrait
         return model(get_called_class(), $getShared, $conn);
     }
 
+    public function createData(array $defaults = [])
+    {
+        if ($this->returnType == 'array')
+        {
+            $return = [];
+
+            return $this->fillArray($return, $data);
+        }
+
+        return $this->createEntity($defaults);
+    }
+
     public function getValidationRules(array $options = []): array
     {
         if (!array_key_exists('except', $options) && $this->validationExcept)
