@@ -89,6 +89,13 @@ trait EntityTrait
 
     public function createEntity(array $defaults = [])
     {
+        if ($this->returnType == 'array')
+        {
+            $return = [];
+
+            return $this->fillArray($return, $defaults);
+        }
+
         $entityClass = $this->returnType;
 
         return new $entityClass($defaults);
