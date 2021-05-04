@@ -15,12 +15,6 @@ trait ModelTrait
 
     protected $parentKey;
 
-    protected $unsafeFields = [];
-
-    protected $fillUnsafeFields = false;
-
-    protected $fillableFields;
-
     protected $validationOnly;
 
     protected $validationExcept;
@@ -125,21 +119,6 @@ trait ModelTrait
 
     public function prepareData($entity)
     {
-        if (is_array($entity))
-        {
-            foreach($this->unsafeFields as $field)
-            {
-                unset($entity[$field]);
-            }
-        }
-        else
-        {
-            foreach($this->unsafeFields as $field)
-            {
-                unset($entity->$field);
-            }
-        }
-
         return $entity;
     }
 

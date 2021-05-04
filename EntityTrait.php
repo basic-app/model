@@ -49,37 +49,28 @@ trait EntityTrait
         return $this->setEntityField($entity, $this->parentKey, $parentId);
     }
 
-    public function fillEntity($entity, array $data, &$hasChanged = null)
+    public function fillArray(array $entity, array $data, &$hasChanged = null) : array
     {
+        $hasChanged = false;
+
         foreach($data as $key => $value)
         {
-            if (!$this->fillUnsafeFields && array_search($key, $this->unsafeFields) !== false)
+            if (!array_key_exists($key, $entity) || ($value != $entity[$key]))
             {
-                unset($data[$key]);
+                $hasChanged = true;
             }
 
-            if ($this->fillableFields)
-            {
-                if (array_search($key, $this->fillableFields) === false)
-                {
-                    unset($data[$key]);
-                }
-            }
+            $entity[$key] = $value;
         }
 
+        return $entity;
+    }
+
+    public function fillEntity($entity, array $data, &$hasChanged = null)
+    {
         if (is_array($entity))
         {
-            $hasChanged = false;
-
-            foreach($data as $key => $value)
-            {
-                if (!array_key_exists($key, $entity) || ($value != $entity[$key]))
-                {
-                    $hasChanged = true;
-                }
-
-                $entity[$key] = $value;
-            }            
+            return $this->fillArray($entity, $data, $hasChanged);
         }
         else
         {
