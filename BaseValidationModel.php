@@ -22,6 +22,8 @@ class BaseValidationModel
 
     use EntityTrait;
 
+    public $insertID;
+
     /**
      * The table's primary key.
      *
@@ -84,7 +86,6 @@ class BaseValidationModel
      * @var ValidationInterface
      */
     protected $validation;
-
 
     /**
      * BaseValidationModel constructor.
@@ -354,11 +355,6 @@ class BaseValidationModel
         }
 
         return $data;
-    }
-
-    public function insertID()
-    {
-        return null;
     }
 
     /**
