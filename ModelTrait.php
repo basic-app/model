@@ -245,4 +245,79 @@ trait ModelTrait
         return $this;
     }
 
+    public function fillArray(array $data, array $params, &$hasChanged = null) : array
+    {
+        $hasChanged = false;
+
+        foreach($params as $key => $value)
+        {
+            if (!array_key_exists($key, $data) || ($value != $data[$key]))
+            {
+                $hasChanged = true;
+            }
+
+            $data[$key] = $value;
+        }
+
+        return $data;
+    }
+
+    public function createData(array $defaults = [])
+    {
+        if ($this->returnType == 'array')
+        {
+            $return = [];
+
+            return $this->fillArray($return, $defaults);
+        }
+
+        $entityClass = $this->returnType;
+
+        return new $entityClass($defaults);
+    }
+
+    public function fillEntity($entity, array $data) : bool 
+    {
+        $entity->fill($data);
+
+        return $entity->hasChanged();
+    }
+
+    public function fill($data, array $params, &$hasChanged = null)
+    {
+        if (is_array($entity))
+        {
+            return $this->fillArray($data, $params, $hasChanged);
+        }
+
+        $hasChanged = $this->fillEntity($data, $params);
+
+        return $data;
+    }
+
+    public function childrens($data)
+    {
+        $id = $this->idValue($data);
+
+        return $this->where($this->parentKey, $id)->findAll();
+    }
+
+    public function deleteData($entity)
+    {
+        if ($this->parentKey)
+        {
+            foreach($this->childrens($entity) as $children)
+            {
+                if (!$this->deleteData($children))
+                {
+                    return false;
+                }
+            }
+        }
+
+        $id = $this->idValue($entity);
+
+        return $this->delete($id);
+    }
+
 }
