@@ -227,4 +227,22 @@ trait ModelTrait
         return $default;
     }
 
+    public function filterWhere(array $params = [])
+    {
+        foreach($params as $key => $value)
+        {
+            if (!$value)
+            {
+                unset($params[$key]);
+            }
+        }
+
+        if ($params)
+        {
+            return $this->where($params);
+        }
+
+        return $this;
+    }
+
 }
