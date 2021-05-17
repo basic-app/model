@@ -161,7 +161,7 @@ trait ModelTrait
             $data = $key;
         }
 
-        $entity = $this->createEntity($data);
+        $entity = $this->createData($data);
 
         $this->saveOrFail($entity->toArray());
 
