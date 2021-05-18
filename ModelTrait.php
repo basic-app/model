@@ -360,12 +360,22 @@ trait ModelTrait
 
         $requiredFields = $this->requiredFields;
 
-        if (!$this->beforeSave($data, $errors))
+        $return = $this->beforeSave($data, $errors);
+
+        if (!$return)
         {
             return false;
         }
 
-        $return = parent::save($data);
+        if ($data->hasChanged())
+        {
+            $return = parent::save($data);
+
+            if ($return)
+            {
+                $return = $this->afterSave($data, $errors);
+            }
+        }
 
         $this->allowedFields = $allowedFields;
 
@@ -374,11 +384,6 @@ trait ModelTrait
         $this->validationOnly = $validationOnly;
 
         $this->requiredFields = $requiredFields;
-
-        if ($return)
-        {
-            return $this->afterSave($data, $errors);
-        }
 
         return $return;
     }
