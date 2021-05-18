@@ -21,6 +21,10 @@ trait ModelTrait
 
     protected $requiredFields = [];
 
+    protected $beforeSave = [];
+
+    protected $afterSave = [];
+
     public static function model(bool $getShared = true, ConnectionInterface &$conn = null)
     {
         return model(get_called_class(), $getShared, $conn);
@@ -318,6 +322,85 @@ trait ModelTrait
         $id = $this->idValue($entity);
 
         return $this->delete($id);
+    }
+
+    public function beforeSave($data, &$errors = null) : bool
+    {
+        $result = $this->trigger('beforeSave', [
+            'data' => $data,
+            'errors' => $errors,
+            'result' => true
+        ]);
+
+        $errors = array_merge((array) $errors, (array) $result['errors']);
+
+        return $result['result'];
+    }
+
+    public function afterSave($data, &$errors = null) : bool
+    {
+        $result = $this->trigger('afterSave', [
+            'data' => $data,
+            'errors' => $errors,
+            'result' => true
+        ]);
+
+        $errors = array_merge((array) $errors, (array) $result['errors']);
+
+        return $result['result'];
+    }
+
+    public function save($data, &$errors = null) : bool
+    {
+        $allowedFields = $this->allowedFields;
+
+        $validationExcept = $this->validationExcept;
+
+        $validationOnly = $this->validationOnly;
+
+        $requiredFields = $this->requiredFields;
+
+        if (!$this->beforeSave($data, $errors))
+        {
+            return false;
+        }
+
+        $return = parent::save($data);
+
+        $this->allowedFields = $allowedFields;
+
+        $this->validationExcept = $validationExcept;
+
+        $this->validationOnly = $validationOnly;
+
+        $this->requiredFields = $requiredFields;
+
+        if ($return)
+        {
+            return $this->afterSave($data, $errors);
+        }
+
+        return $return;
+    }
+
+    public function unsetAllowedField(string $name)
+    {
+        $index = array_search($name, $this->allowedFields);
+    
+        if ($index !== false)
+        {
+            unset($this->allowedFields[$index]);
+        }
+    }
+
+    public function unsetRequiredField(string $name)
+    {
+        $index = array_search($name, $this->requiredFields);
+    
+        if ($index !== false)
+        {
+            unset($this->requiredFields[$index]);
+        }
     }
 
 }
