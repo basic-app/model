@@ -6,8 +6,12 @@
  */
 namespace BasicApp\Model;
 
-trait DefaultEventsTrait
+trait EventsTrait
 {
+
+    protected $beforeSave = [];
+
+    protected $afterSave = [];    
 
     protected function setDefaultEvents()
     {
@@ -19,6 +23,8 @@ trait DefaultEventsTrait
         $this->afterFind[] = 'afterFind';
         $this->beforeDelete[] = 'beforeDelete';
         $this->afterDelete[] = 'afterDelete';
+        $this->beforeSave[] = 'beforeSave';
+        $this->afterSave[] = 'afterSave';
     }
 
     protected function beforeInsert(array $data) : array
@@ -57,6 +63,16 @@ trait DefaultEventsTrait
     }
 
     protected function afterDelete(array $data) : array
+    {
+        return $data;
+    }
+
+    protected function beforeSave(array $data) : array
+    {
+        return $data;
+    }
+
+    protected function afterSave(array $data) : array
     {
         return $data;
     }

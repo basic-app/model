@@ -15,7 +15,7 @@ abstract class BaseModel extends \CodeIgniter\Model
 
     use EntityTrait;
 
-    use DefaultEventsTrait;
+    use EventsTrait;
 
     /**
      * BaseModel constructor.

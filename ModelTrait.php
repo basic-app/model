@@ -21,10 +21,6 @@ trait ModelTrait
 
     protected $requiredFields = [];
 
-    protected $beforeSave = [];
-
-    protected $afterSave = [];
-
     public static function model(bool $getShared = true, ConnectionInterface &$conn = null)
     {
         return model(get_called_class(), $getShared, $conn);
@@ -290,32 +286,6 @@ trait ModelTrait
         return $this->delete($id);
     }
 
-    public function beforeSave($data, &$errors = null) : bool
-    {
-        $result = $this->trigger('beforeSave', [
-            'data' => $data,
-            'errors' => $errors,
-            'result' => true
-        ]);
-
-        $errors = array_merge((array) $errors, (array) $result['errors']);
-
-        return $result['result'];
-    }
-
-    public function afterSave($data, &$errors = null) : bool
-    {
-        $result = $this->trigger('afterSave', [
-            'data' => $data,
-            'errors' => $errors,
-            'result' => true
-        ]);
-
-        $errors = array_merge((array) $errors, (array) $result['errors']);
-
-        return $result['result'];
-    }
-
     public function save($data, &$errors = null) : bool
     {
         $allowedFields = $this->allowedFields;
@@ -326,20 +296,38 @@ trait ModelTrait
 
         $requiredFields = $this->requiredFields;
 
-        $return = $this->beforeSave($data, $errors);
+        $result = $this->trigger('beforeSave', [
+            'data' => $data,
+            'errors' => $errors,
+            'result' => true
+        ]);
 
-        if (!$return)
+        $return = $result['result'];
+
+        $data = $result['data'];
+
+        $errors = $result['errors'];
+
+        if ($return)
         {
-            return false;
-        }
-
-        if ($data->hasChanged())
-        {
-            $return = parent::save($data);
-
-            if ($return)
+            if ($data->hasChanged())
             {
-                $return = $this->afterSave($data, $errors);
+                $return = parent::save($data);
+
+                if ($return)
+                {
+                    $result = $this->trigger('afterSave', [
+                        'data' => $data,
+                        'errors' => $errors,
+                        'result' => true
+                    ]);
+
+                    $return = $result['result'];
+
+                    $data = $result['data'];
+
+                    $errors = $result['errors'];
+                }
             }
         }
 
