@@ -62,35 +62,6 @@ trait ModelTrait
         return $return;
     }
 
-    public function count()
-    {
-        return $this->countAllResults();
-    }
-
-    public function one()
-    {
-        $return = $this->first();
-
-        if ($return)
-        {
-            $return = $this->prepareData($return);
-        }
-
-        return $return;
-    }
-
-    public function all()
-    {
-        $return = $this->findAll();
-    
-        foreach($return as $key => $data)
-        {
-            $return[$key] = $this->prepareData($data);
-        }
-
-        return $return;
-    }
-
     public function findOne($id, $error = null)
     {
         Assert::notEmpty($id, $error ?? 'ID not defined.');
@@ -104,7 +75,7 @@ trait ModelTrait
             $this->where($this->table . '.' . $this->primaryKey, $id);
         }
 
-        return $this->one();
+        return $this->first();
     }
 
     public function findOrFail($id, string $error = null)
@@ -121,11 +92,6 @@ trait ModelTrait
         return $this->select($this->allowedFields);
     }
 
-    public function prepareData($entity)
-    {
-        return $entity;
-    }
-
     public function errors(bool $forceDB = false) : array
     {
         $return = parent::errors($forceDB);
@@ -140,7 +106,7 @@ trait ModelTrait
 
     public function findOrCreate(array $key, $fields = null)
     {
-        $return = $this->where($key)->one();
+        $return = $this->where($key)->first();
 
         if ($return)
         {
