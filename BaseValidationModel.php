@@ -296,7 +296,7 @@ class BaseValidationModel
         return $rules;
     }
 
-    public function save($data): bool
+    public function save($data, &$error = null): bool
     {
         if (empty($data))
         {
@@ -337,7 +337,14 @@ class BaseValidationModel
         // them as an array.
         if (is_object($data) && ! $data instanceof stdClass)
         {
-            $data = $this->objectToArray($data, true, true);
+            if ($type == 'insert')
+            {
+                $data = $this->objectToArray($data, false, true); // !!! ONLY CHANGED = FALSE
+            }
+            else
+            {
+                $data = $this->objectToArray($data, true, true);
+            }
         }
 
         // If it's still a stdClass, go ahead and convert to

@@ -29,4 +29,17 @@ abstract class BaseModel extends \CodeIgniter\Model
         $this->setDefaultEvents();
     }
 
+    protected function transformDataToArray($data, string $type): array
+    {
+        if ($type == 'insert')
+        {
+            if (is_object($data) && ! $data instanceof stdClass)
+            {
+                $data = $this->objectToArray($data, false, true);
+            }
+        }
+
+        return parent::transformDataToArray($data, $type);
+    }
+
 }
