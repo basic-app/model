@@ -288,6 +288,22 @@ trait ModelTrait
 
     public function save($data, &$errors = null) : bool
     {
+        if (is_object($data) && ! $data instanceof stdClass)
+        {
+            $data = $this->objectToArray($data, false, true); // SET ONLY CHANGED FLAG TO FALSE
+        }
+        else
+        {
+            if ($this->shouldUpdate($data))
+            {
+                $data = $this->transformDataToArray($data, 'update');
+            }
+            else
+            {
+                $data = $this->transformDataToArray($data, 'insert');
+            }
+        }
+
         $allowedFields = $this->allowedFields;
 
         $validationExcept = $this->validationExcept;
