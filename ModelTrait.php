@@ -83,7 +83,7 @@ trait ModelTrait
         return $return;
     }
 
-    public function allowed()
+    public function selectAllowedFields()
     {
         return $this->select($this->allowedFields);
     }
@@ -310,24 +310,21 @@ trait ModelTrait
 
         if ($return)
         {
-            if ($data->hasChanged())
+            $return = parent::save($data);
+
+            if ($return)
             {
-                $return = parent::save($data);
+                $result = $this->trigger('afterSave', [
+                    'data' => $data,
+                    'errors' => $errors,
+                    'result' => true
+                ]);
 
-                if ($return)
-                {
-                    $result = $this->trigger('afterSave', [
-                        'data' => $data,
-                        'errors' => $errors,
-                        'result' => true
-                    ]);
+                $return = $result['result'];
 
-                    $return = $result['result'];
+                $data = $result['data'];
 
-                    $data = $result['data'];
-
-                    $errors = $result['errors'];
-                }
+                $errors = $result['errors'];
             }
         }
 

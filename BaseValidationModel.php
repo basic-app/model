@@ -337,14 +337,7 @@ class BaseValidationModel
         // them as an array.
         if (is_object($data) && ! $data instanceof stdClass)
         {
-            if ($type == 'insert')
-            {
-                $data = $this->objectToArray($data, false, true); // !!! ONLY CHANGED = FALSE
-            }
-            else
-            {
-                $data = $this->objectToArray($data, true, true);
-            }
+            $data = $this->objectToArray($data, false, true); // !!! ONLY CHANGED = FALSE
         }
 
         // If it's still a stdClass, go ahead and convert to
