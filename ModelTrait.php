@@ -292,6 +292,8 @@ trait ModelTrait
             }
         }
 
+        $idValue = $this->idValue($data);
+
         $allowedFields = $this->allowedFields;
 
         $validationExcept = $this->validationExcept;
@@ -303,7 +305,8 @@ trait ModelTrait
         $result = $this->trigger('beforeSave', [
             'data' => $data,
             'errors' => $errors,
-            'result' => true
+            'result' => true,
+            'idValue' => $idValue
         ]);
 
         $return = $result['result'];
@@ -321,7 +324,8 @@ trait ModelTrait
                 $result = $this->trigger('afterSave', [
                     'data' => $data,
                     'errors' => $errors,
-                    'result' => true
+                    'result' => true,
+                    'idValue' => $idValue
                 ]);
 
                 $return = $result['result'];
