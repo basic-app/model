@@ -83,21 +83,9 @@ trait ModelTrait
         return $return;
     }
 
-    public function selectAllowedFields()
-    {
-        return $this->select($this->allowedFields);
-    }
-
     public function errors(bool $forceDB = false) : array
     {
-        $return = parent::errors($forceDB);
-    
-        if (!$return)
-        {
-            return [];
-        }
-
-        return $return;
+        return (array) parent::errors($forceDB);
     }
 
     public function findOrCreate(array $key, $fields = null)
@@ -174,7 +162,7 @@ trait ModelTrait
 
     public function refresh(&$entity)
     {
-        $id = $this->entityPrimaryKey($entity);
+        $id = $this->idValue($entity);
 
         Assert::notEmpty($id, 'ID not found.');
 
@@ -373,6 +361,11 @@ trait ModelTrait
         {
             unset($this->requiredFields[$index]);
         }
+    }
+
+    public function prepareBuilder()
+    {
+        return $this;
     }
 
 }
