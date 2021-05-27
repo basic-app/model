@@ -450,4 +450,9 @@ class BaseValidationModel
         return $properties;
     }
 
+    public function getInsertID()
+    {
+        return $this->insertID;
+    }
+
 }
