@@ -58,9 +58,14 @@ trait ModelTrait
         return $return;
     }
 
-    public function findOne($id, $error = null)
+    public function findOne($id)
     {
-        Assert::notEmpty($id, $error ?? 'ID not defined.');
+        if ($id === null)
+        {
+            return null;
+        }
+
+        Assert::notEmpty($id, 'ID not defined.');
 
         if (is_array($id))
         {
@@ -76,7 +81,7 @@ trait ModelTrait
 
     public function findOrFail($id, string $error = null)
     {
-        $return = $this->findOne($id, $error);
+        $return = $this->findOne($id);
 
         Assert::notEmpty($return, $error ?? 'Data not found.');
 
