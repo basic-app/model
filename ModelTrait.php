@@ -221,6 +221,11 @@ trait ModelTrait
         return $data;
     }
 
+    public function createEntity(array $data = [])
+    {
+        return $this->createData($data);
+    }
+
     public function createData(array $defaults = [])
     {
         if ($this->returnType == 'array')
