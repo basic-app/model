@@ -382,4 +382,15 @@ trait ModelTrait
         return $this;
     }
 
+    public function whereDate(string $column, \DateTime $date)
+    {
+        $this->where('DAY(' . $column . ')', $date->format('d'), false);
+
+        $this->where('MONTH(' . $column . ')', $date->format('m'), false);
+
+        $this->where('YEAR(' . $column . ')', $date->format('Y'), false);
+
+        return $this;
+    }
+
 }
