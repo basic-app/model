@@ -6,7 +6,7 @@
  */
 namespace BasicApp\Model;
 
-trait EventsTrait
+trait DefaultEventsTrait
 {
 
     protected $beforeSave = [];
