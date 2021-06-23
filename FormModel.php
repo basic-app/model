@@ -145,5 +145,15 @@ abstract class FormModel extends \CodeIgniter\BaseModel
 
         throw new Exception('The ' . $name . ' method is not found.');
     }
+
+    public function errors(bool $forceDB = false)
+    {
+        if (!$this->skipValidation && ($errors = $this->validation->getErrors()))
+        {
+            return $errors;
+        }
+
+        return [];
+    }
     
 }
