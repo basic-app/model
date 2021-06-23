@@ -51,7 +51,7 @@ trait EntityTrait
     
     public function entityPrimaryKey($entity)
     {
-        return $this->idValue($entity);
+        return $this->getIdValue($entity);
     }
  
     public function entityParentKey($entity)
