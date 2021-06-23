@@ -9,6 +9,7 @@ namespace BasicApp\Model;
 use Closure;
 use Exception;
 use CodeIgniter\Validation\ValidationInterface;
+use BasicApp\Condition\ConditionTrait;
 
 abstract class FormModel extends \CodeIgniter\BaseModel
 {
@@ -20,6 +21,8 @@ abstract class FormModel extends \CodeIgniter\BaseModel
     use ModelTrait;
 
     use DefaultEventsTrait;
+
+    use ConditionTrait;
 
     public function __construct(ValidationInterface $validation = null)
     {

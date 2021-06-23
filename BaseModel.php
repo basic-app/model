@@ -7,6 +7,7 @@
 namespace BasicApp\Model;
 
 use CodeIgniter\Validation\ValidationInterface;
+use BasicApp\Condition\ConditionTrait;
 
 abstract class BaseModel extends \CodeIgniter\Model
 {
@@ -16,6 +17,8 @@ abstract class BaseModel extends \CodeIgniter\Model
     use EntityTrait;
 
     use DefaultEventsTrait;
+
+    use ConditionTrait;
 
     /**
      * BaseModel constructor.
