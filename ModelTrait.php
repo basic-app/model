@@ -194,11 +194,18 @@ trait ModelTrait
             {
                 unset($params[$key]);
             }
+
+            if (is_array($value))
+            {
+                $this->whereIn($key, $value);
+
+                unset($params[$key]);
+            }
         }
 
         if ($params)
         {
-            return $this->where($params);
+            $this->where($params);
         }
 
         return $this;
