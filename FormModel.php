@@ -18,6 +18,8 @@ abstract class FormModel extends \CodeIgniter\BaseModel
 
     protected $strictMethods = true;
 
+    protected $idValue;
+
     use ModelTrait;
 
     use DefaultEventsTrait;
@@ -96,11 +98,6 @@ abstract class FormModel extends \CodeIgniter\BaseModel
         throw new Exception('The ' . __METHOD__ . ' method is not implemented.');
     }
 
-    protected function idValue($data)
-    {
-        throw new Exception('The ' . __METHOD__ . ' method is not implemented.');
-    }
-
     public function countAllResults(bool $reset = true, bool $test = false)
     {
         throw new Exception('The ' . __METHOD__ . ' method is not implemented.');
@@ -156,4 +153,9 @@ abstract class FormModel extends \CodeIgniter\BaseModel
         return [];
     }
     
+    protected function idValue($data)
+    {
+        return $this->idValue;
+    }
+
 }

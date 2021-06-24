@@ -167,7 +167,7 @@ trait ModelTrait
 
     public function refresh(&$entity)
     {
-        $id = $this->idValue($entity);
+        $id = $this->getIdValue($entity);
 
         Assert::notEmpty($id, 'ID not found.');
 
@@ -268,7 +268,7 @@ trait ModelTrait
 
     public function childrens($data)
     {
-        $id = $this->idValue($data);
+        $id = $this->getIdValue($data);
 
         return $this->where($this->parentKey, $id)->findAll();
     }
@@ -286,7 +286,7 @@ trait ModelTrait
             }
         }
 
-        $id = $this->idValue($entity);
+        $id = $this->getIdValue($entity);
 
         return $this->delete($id);
     }
@@ -309,7 +309,7 @@ trait ModelTrait
             }
         }
 
-        $idValue = $this->idValue($data);
+        $idValue = $this->getIdValue($data);
 
         $allowedFields = $this->allowedFields;
 
