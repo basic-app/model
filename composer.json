@@ -8,7 +8,6 @@
     },
     "require": {
         "webmozart/assert": "*",
-        "basic-app/condition" : "*",
         "basic-app/behavior": "*"
     }
 }
