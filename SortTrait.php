@@ -13,11 +13,16 @@ trait SortTrait
 
     protected $sortItems = [];
 
+    public function getSortItems() : array
+    {
+        return $this->sortItems;
+    }
+
     public function sort(string $key)
     {
-        Assert::arrayHasKey($this->orderByItems, $key);
+        Assert::arrayHasKey($this->sortItems, $key);
 
-        $this->orderBy($this->orderByItems[$key]); 
+        $this->orderBy($this->sortItems[$key]); 
 
         return $this;
     }
