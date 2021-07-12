@@ -11,6 +11,8 @@ use CodeIgniter\Validation\ValidationInterface;
 abstract class BaseModel extends \CodeIgniter\Model
 {
 
+    use SortTrait;
+
     use ModelTrait;
 
     use EntityTrait;
