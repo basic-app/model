@@ -20,7 +20,7 @@ trait SortTrait
 
     public function sort(string $key)
     {
-        Assert::arrayHasKey($this->sortItems, $key);
+        Assert::keyExists($this->sortItems, $key);
 
         $this->orderBy($this->sortItems[$key]); 
 
