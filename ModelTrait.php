@@ -400,4 +400,17 @@ trait ModelTrait
         return $this;
     }
 
+    public function getFieldLabel($field) : string
+    {
+        if (array_key_exists($field, $this->validationRules))
+        {
+            if (array_key_exists('label', $this->validationRules[$field]['label']))
+            {
+                return $this->validationRules[$field]['label'];
+            }
+        }
+
+        return $field;
+    }
+
 }

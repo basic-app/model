@@ -14,13 +14,15 @@ abstract class FormModel extends \CodeIgniter\BaseModel
 {
 
     protected $strictProperties = true;
-
+    
     protected $strictMethods = true;
-
+    
     protected $idValue;
 
     use ModelTrait;
-
+    
+    use SortTrait;
+    
     use DefaultEventsTrait;
 
     public function __construct(ValidationInterface $validation = null)
