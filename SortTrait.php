@@ -22,7 +22,7 @@ trait SortTrait
     {
         Assert::keyExists($this->sortItems, $key);
 
-        $this->orderBy($this->sortItems[$key]); 
+        $this->orderBy($this->sortItems[$key], '', true); 
 
         return $this;
     }

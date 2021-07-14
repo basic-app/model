@@ -404,7 +404,7 @@ trait ModelTrait
     {
         if (array_key_exists($field, $this->validationRules))
         {
-            if (array_key_exists('label', $this->validationRules[$field]['label']))
+            if (array_key_exists('label', $this->validationRules[$field]))
             {
                 return $this->validationRules[$field]['label'];
             }
