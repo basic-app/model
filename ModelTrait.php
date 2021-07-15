@@ -186,31 +186,6 @@ trait ModelTrait
         return $default;
     }
 
-    public function filterWhere(array $params = [])
-    {
-        foreach($params as $key => $value)
-        {
-            if (!$value)
-            {
-                unset($params[$key]);
-            }
-
-            if (is_array($value))
-            {
-                $this->whereIn($key, $value);
-
-                unset($params[$key]);
-            }
-        }
-
-        if ($params)
-        {
-            $this->where($params);
-        }
-
-        return $this;
-    }
-
     public function fillArray(array $data, array $params, &$hasChanged = null) : array
     {
         $hasChanged = false;
@@ -386,17 +361,6 @@ trait ModelTrait
 
     public function prepareBuilder()
     {
-        return $this;
-    }
-
-    public function whereDate(string $column, \DateTime $date)
-    {
-        $this->where('DAY(' . $column . ')', $date->format('d'), false);
-
-        $this->where('MONTH(' . $column . ')', $date->format('m'), false);
-
-        $this->where('YEAR(' . $column . ')', $date->format('Y'), false);
-
         return $this;
     }
 

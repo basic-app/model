@@ -25,6 +25,8 @@ abstract class FormModel extends \CodeIgniter\BaseModel
     
     use DefaultEventsTrait;
 
+    use BuilderTrait;
+
     public function __construct(ValidationInterface $validation = null)
     {
         parent::__construct($validation);
