@@ -49,7 +49,7 @@ trait BuilderTrait
         return $this;
     }
 
-    public function filterWhereDate($column, ?DateTime $date)
+    public function filterWhereDate($column, $date)
     {
         if (!$date)
         {
